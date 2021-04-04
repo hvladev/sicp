@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+
+function run_tests_for_chapter() {
+  echo "Running tests for chapter $1..."
+
+  for file in tests/chapter-$1/*-test.scm; do
+    echo; echo
+    run_test $file
+  done
+
+  echo
+  echo "Running tests for chapter $1... done!"
+}
+
+function run_all_tests() {
+  echo "Running all tests..."
+
+  for n in 1 2 3 4 5; do
+    run_tests_for_chapter $n
+  done
+
+  echo
+  echo "Running all tests... done!"
+}
+
+function run_test() {
+  if [ -f "$1" ]; then
+    echo "🔬 $1"
+    scheme --quiet < $1
+  else
+    echo "File not found: $1"
+  fi
+}
+
+if [ $# -eq 0 ]; then
+  run_all_tests
+else
+  case $1 in
+    1 | 2 | 3 | 4 | 5)
+      run_tests_for_chapter
+      ;;
+
+    [0-9].[0-9] | [0-9].[0-9][0-9])
+      run_test "tests/chapter-${1::1}/exercise-${1:2}-test.scm"
+      ;;
+
+    *)
+      echo "wat!?"
+      ;;
+  esac
+fi
